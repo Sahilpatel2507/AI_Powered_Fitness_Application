@@ -15,3 +15,6 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+/aiservice/aiservice/src/main/resources/.env.properties
+/activityservice/activityservice/src/main/resources/.env.properties
+/userservice/userservice/src/main/resources/.env.properties

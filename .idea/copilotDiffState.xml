@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="/UserValidationService (snapshot).java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="/UserValidationService (snapshot).java" />
+              <option name="originalContent" value="package com.fitness.activityservice.service;&#10;&#10;import lombok.RequiredArgsConstructor;&#10;import org.springframework.stereotype.Service;&#10;import org.springframework.web.reactive.function.client.WebClient;&#10;import org.springframework.web.reactive.function.client.WebClientResponseException;&#10;&#10;@Service&#10;@RequiredArgsConstructor&#10;public class UserValidationService {&#10;    private final WebClient userServiceWebClient;&#10;&#10;    public boolean validateUser(String userId) {&#10;        try {&#10;            userServiceWebClient.get()&#10;                .uri(&quot;/api/users/{id}&quot;, userId)&#10;                .retrieve()&#10;                .bodyToMono(Boolean.class)&#10;                .block();&#10;        } catch (WebClientResponseException e) {&#10;            e.printStackTrace();&#10;        }&#10;        return false;&#10;    }&#10;}&#10;" />
+              <option name="updatedContent" value="package com.fitness.activityservice.service;&#10;&#10;import lombok.RequiredArgsConstructor;&#10;import org.springframework.stereotype.Service;&#10;import org.springframework.web.reactive.function.client.WebClient;&#10;import org.springframework.web.reactive.function.client.WebClientResponseException;&#10;&#10;@Service&#10;@RequiredArgsConstructor&#10;public class UserValidationService {&#10;    private final WebClient userServiceWebClient;&#10;&#10;    public boolean validateUser(String userId) {&#10;        try {&#10;            Boolean result = userServiceWebClient.get()&#10;                .uri(&quot;/api/users/{id}&quot;, userId)&#10;                .retrieve()&#10;                .bodyToMono(Boolean.class)&#10;                .block();&#10;            return result != null &amp;&amp; result;&#10;        } catch (WebClientResponseException e) {&#10;            e.printStackTrace();&#10;            return false;&#10;        }&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
