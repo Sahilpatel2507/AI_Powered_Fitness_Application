@@ -13,7 +13,7 @@ public class UserValidationService {
     public boolean validateUser(String userId) {
         try {
             String response = userServiceWebClient.get()
-                    .uri("/api/users/{id}", userId)
+                    .uri("/api/users/{id}/validate", userId)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
