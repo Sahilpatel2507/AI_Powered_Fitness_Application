@@ -36,9 +36,9 @@ public class KeycloakUserSyncFilter implements WebFilter {
                         if(!exist) {
                             if(registerRequest != null){
                                 return userService.registerUser(registerRequest)
-                                        .then(Mono.empty());
+                                        .then(chain.filter(exchange));
                             } else{
-                                return Mono.empty();
+                                return chain.filter(exchange);
                             }
                         }
                         else{
