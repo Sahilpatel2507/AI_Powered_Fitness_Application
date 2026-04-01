@@ -2,11 +2,12 @@ import { Box, Button, createTheme, ThemeProvider, CssBaseline, AppBar, Toolbar, 
 import { useContext, useEffect, useState, useMemo } from "react";
 import { AuthContext } from "react-oauth2-code-pkce";
 import { useDispatch } from "react-redux";
-import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router";
+import { Navigate, Route, Routes, useNavigate } from "react-router";
 import { setCredentials } from "./store/authSlice";
 import ActivityForm from "./components/ActivityForm";
 import ActivityList from "./components/ActivityList";
 import ActivitiesDetail from "./components/ActivityDetail";
+import Register from "./components/Register";
 
 const ActivitiesPage = () => {
   return (
@@ -19,7 +20,9 @@ const ActivitiesPage = () => {
 
 function App() {
   const { token, tokenData, logIn, logOut } = useContext(AuthContext);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  // ... (authReady and mode states remain the same)
   const [authReady, setAuthReady] = useState(false);
   const [mode, setMode] = useState('dark');
 
@@ -50,6 +53,7 @@ function App() {
   }, [token, tokenData, dispatch]);
 
   const theme = useMemo(() => createTheme({
+    // ... (theme configuration remains the same)
     palette: {
       mode,
       ...(mode === 'light' ? {
@@ -100,11 +104,10 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
         <Box sx={{ flexGrow: 1, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-          <AppBar position="static" color="transparent" elevation={0} sx={{ borderBottom: '1px solid', borderColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)', backdropFilter: 'blur(12px)', backgroundColor: mode === 'dark' ? 'rgba(5, 5, 16, 0.7)' : 'rgba(248, 250, 252, 0.7)' }}>
+          <AppBar position="static" color="transparent" elevation={0} sx={{ borderBottom: '1px solid', borderColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)', backdropFilter: 'blur(12px)', backgroundColor: mode === 'dark' ? 'rgba(5, 5, 16, 0.7)' : 'rgba(248, 240, 252, 0.7)' }}>
             <Toolbar sx={{ py: 1 }}>
-              <Typography variant="h5" component="div" sx={{ flexGrow: 1, background: mode === 'dark' ? 'linear-gradient(135deg, #06b6d4, #8b5cf6)' : 'linear-gradient(135deg, #0284c7, #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+              <Typography variant="h5" component="div" sx={{ flexGrow: 1, background: mode === 'dark' ? 'linear-gradient(135deg, #06b6d4, #8b5cf6)' : 'linear-gradient(135deg, #0284c7, #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 'bold', display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => navigate('/')}>
                 <span style={{ fontSize: '1.4rem', marginRight: '8px' }}>⚡</span> AI Fitness
               </Typography>
               
@@ -113,9 +116,14 @@ function App() {
               </Button>
 
               {!token ? (
-                <Button variant="contained" sx={{ background: mode === 'dark' ? 'linear-gradient(135deg, #06b6d4, #8b5cf6)' : 'linear-gradient(135deg, #0284c7, #7c3aed)', color: 'white', '&:hover': { transform: 'translateY(-2px)' }, transition: 'all 0.3s' }} onClick={() => logIn()}>
-                  Login
-                </Button>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Button variant="outlined" color="primary" onClick={() => navigate('/register')}>
+                    Sign Up
+                  </Button>
+                  <Button variant="contained" sx={{ background: mode === 'dark' ? 'linear-gradient(135deg, #06b6d4, #8b5cf6)' : 'linear-gradient(135deg, #0284c7, #7c3aed)', color: 'white', '&:hover': { transform: 'translateY(-2px)' }, transition: 'all 0.3s' }} onClick={() => logIn()}>
+                    Login
+                  </Button>
+                </Box>
               ) : (
                 <Button variant="outlined" color="primary" onClick={() => {
                   const logoutUrl = `http://localhost:8181/realms/fitness-app/protocol/openid-connect/logout?post_logout_redirect_uri=${encodeURIComponent(window.location.origin)}&client_id=oauth2-pkce-client`;
@@ -129,25 +137,36 @@ function App() {
           </AppBar>
 
           <Container maxWidth="lg" sx={{ mt: 5, mb: 5, flexGrow: 1 }}>
-            {!token ? (
-              <Box sx={{ textAlign: 'center', mt: { xs: 8, md: 15 } }}>
-                <Typography variant="h2" sx={{ mb: 3, background: mode === 'dark' ? 'linear-gradient(90deg, #fff, #94a3b8)' : 'linear-gradient(90deg, #0f172a, #475569)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  Future of Fitness Tracking
-                </Typography>
-                <Typography variant="h6" color="text.secondary" sx={{ mb: 6, maxWidth: 600, mx: 'auto', fontWeight: 300 }}>
-                  Log your activities and let our advanced AI generate personalized insights, improvements, and safety guidelines.
-                </Typography>
-              </Box>
-            ) : (
-              <Routes>
-                <Route path="/activities" element={<ActivitiesPage />} />
-                <Route path="/activities/:id" element={<ActivitiesDetail />} />
-                <Route path="/" element={<Navigate to="/activities" replace />} />
-              </Routes>
-            )}
+            <Routes>
+              {!token ? (
+                <>
+                  <Route path="/" element={
+                    <Box sx={{ textAlign: 'center', mt: { xs: 8, md: 15 } }}>
+                      <Typography variant="h2" sx={{ mb: 3, background: mode === 'dark' ? 'linear-gradient(90deg, #fff, #94a3b8)' : 'linear-gradient(90deg, #0f172a, #475569)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                        Future of Fitness Tracking
+                      </Typography>
+                      <Typography variant="h6" color="text.secondary" sx={{ mb: 6, maxWidth: 600, mx: 'auto', fontWeight: 300 }}>
+                        Log your activities and let our advanced AI generate personalized insights, improvements, and safety guidelines.
+                      </Typography>
+                      <Button variant="contained" size="large" onClick={() => navigate('/register')} sx={{ px: 6, py: 2, fontSize: '1.2rem', background: mode === 'dark' ? 'linear-gradient(135deg, #06b6d4, #8b5cf6)' : 'linear-gradient(135deg, #0284c7, #7c3aed)' }}>
+                        Get Started Free
+                      </Button>
+                    </Box>
+                  } />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </>
+              ) : (
+                <>
+                  <Route path="/activities" element={<ActivitiesPage />} />
+                  <Route path="/activities/:id" element={<ActivitiesDetail />} />
+                  <Route path="/" element={<Navigate to="/activities" replace />} />
+                  <Route path="*" element={<Navigate to="/activities" replace />} />
+                </>
+              )}
+            </Routes>
           </Container>
         </Box>
-      </Router>
     </ThemeProvider>
   );
 }

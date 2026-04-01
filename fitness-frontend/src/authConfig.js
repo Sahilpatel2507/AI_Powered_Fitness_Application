@@ -5,4 +5,5 @@ export const authConfig= {
   redirectUri: 'http://localhost:5173/',
   scope: 'openid profile email offline_access',
   onRefreshTokenExpire: (event) => event.logIn(),
+  autoLogin: false,
 }
